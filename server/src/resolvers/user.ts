@@ -33,7 +33,7 @@ export class UserResolver {
   async me(
      @Ctx() { em, req }: MyContext
   ): Promise<User | null> {
-    
+         
       if(req.session.username){
         const user = await em.findOne(User, { username: req.session.username});
         return user;
