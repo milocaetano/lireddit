@@ -28,20 +28,21 @@ class UserResponse {
 
 @Resolver()
 export class UserResolver {
-
-  @Query(() => User , {nullable: true} )
-  async me(
-     @Ctx() { em, req }: MyContext
-  ): Promise<User | null> {
-         
-      if(req.session.username){
-        const user = await em.findOne(User, { username: req.session.username});
-        return user;
-      }
+  @Query(() => User, { nullable: true })
+  async me(@Ctx() { em, req }: MyContext): Promise<User | null> {
+    if (req.session.username) {
+      const user = await em.findOne(User, { username: req.session.username });
+      return user;
+    }
 
     return null;
   }
 
+  @Query(() => [User], { nullable: true })
+  async allusers(@Ctx() { em }: MyContext): Promise<User[] | null> {
+    const users = await em.find(User, {});
+    return users;    
+  }
 
   @Mutation(() => User)
   async register(
@@ -86,9 +87,9 @@ export class UserResolver {
       };
     }
 
-    try{
+    try {
       req.session.username = user.username;
-    }catch(e){
+    } catch (e) {
       console.error(e);
     }
     return {
