@@ -54,13 +54,14 @@ export class UserResolver {
       username: options.username,
       password: hashedPassword,
     });
-    await em.persistAndFlush(user);
-
     try {
+      await em.persistAndFlush(user);
       req.session.username = user.username;
     } catch (err) {
        //|| err.detail.includes("already exists")) {
       // duplicate username error
+
+      console.log(err);
       if (err.code === "23505") {
         return {
           errors: [
@@ -71,6 +72,16 @@ export class UserResolver {
           ],
         };
       }
+
+      return {
+        errors: [
+          {
+            field: "username",
+            message: "somthing wrong",
+          },
+        ],
+      };
+
     }
     return {user};
   }
