@@ -44,11 +44,11 @@ export class UserResolver {
     return users;    
   }
 
-  @Mutation(() => User)
+  @Mutation(() => UserResponse)
   async register(
     @Arg('options', () => UsernamePasswordInput) options: UsernamePasswordInput,
     @Ctx() { em, req }: MyContext
-  ): Promise<User> {
+  ): Promise<UserResponse> {
     const hashedPassword = await argon2.hash(options.password);
     const user = em.create(User, {
       username: options.username,
@@ -58,10 +58,21 @@ export class UserResolver {
 
     try {
       req.session.username = user.username;
-    } catch (e) {
-      console.error(e);
+    } catch (err) {
+       //|| err.detail.includes("already exists")) {
+      // duplicate username error
+      if (err.code === "23505") {
+        return {
+          errors: [
+            {
+              field: "username",
+              message: "username already taken",
+            },
+          ],
+        };
+      }
     }
-    return user;
+    return {user};
   }
 
   @Mutation(() => UserResponse)
