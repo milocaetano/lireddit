@@ -28,9 +28,13 @@ const Register: React.FC<registerProps> = ({}) => {
     <Wrapper>
       <Formik
         initialValues={{ username: '', password: '' }}
-        onSubmit={values => {
+        onSubmit={ async(values) => {
           console.log("valor:",values);
-          register(values);
+          const result = await register(values);
+          
+          console.log("Result", result);
+
+         
         }}
       >
         {({ values, handleChange }) => (
