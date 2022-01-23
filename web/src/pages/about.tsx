@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 export default function errorMessageExample() {
   const [input, setInput] = useState('');
 
-  const handleInputChange = e => setInput(e.target.value);
+  const handleInputChange = (e: { target: { value: React.SetStateAction<string>; }; }) => setInput(e.target.value);
 
   const isError = input === '';
 
