@@ -11,6 +11,7 @@ import { UserResolver } from './resolvers/user';
 import * as redis from 'redis';
 import session from 'express-session';
 import connectRedis from 'connect-redis';
+import cors from 'cors';
 import './types';
 const main = async () => {
   const orm = await MikroORM.init(microConfig);
@@ -29,6 +30,12 @@ const main = async () => {
   //const post = await orm.em.findOne(Post,1);
   //console.log(post);
   const app = express();
+
+  app.use(
+    cors({
+      origin: 'http://localhost:3000',
+    })
+  );
   app.use(
     session({
       store: new RedisStore({ client: client, disableTouch: true }),
