@@ -41,7 +41,7 @@ export class UserResolver {
   @Query(() => [User], { nullable: true })
   async allusers(@Ctx() { em }: MyContext): Promise<User[] | null> {
     const users = await em.find(User, {});
-    return users;    
+    return users;
   }
 
   @Mutation(() => UserResponse)
@@ -49,6 +49,26 @@ export class UserResolver {
     @Arg('options', () => UsernamePasswordInput) options: UsernamePasswordInput,
     @Ctx() { em, req }: MyContext
   ): Promise<UserResponse> {
+    const errors: FieldError[] = new Array<FieldError>();
+
+    if (options.username.length <= 3) {
+      errors.push(
+        Object.assign(new FieldError(), {
+          field: 'username',
+          message: 'username length must must be greather than 3',
+        })
+      );
+    }
+
+    if (options.password.length <= 2) {
+      errors.push(
+        Object.assign(new FieldError(), {
+          field: 'password',
+          message: 'password length must be greather than 2',
+        })
+      );
+    }
+
     const hashedPassword = await argon2.hash(options.password);
     const user = em.create(User, {
       username: options.username,
@@ -58,32 +78,32 @@ export class UserResolver {
       await em.persistAndFlush(user);
       req.session.username = user.username;
     } catch (err) {
-       //|| err.detail.includes("already exists")) {
+      //|| err.detail.includes("already exists")) {
       // duplicate username error
 
       console.log(err);
-      if (err.code === "23505") {
-        return {
-          errors: [
-            {
-              field: "username",
-              message: "username already taken",
-            },
-          ],
-        };
+      if (err.code === '23505') {
+        errors.push(
+          Object.assign(new FieldError(), {
+            field: 'username',
+            message: 'Username already taken2',
+          })
+        );
+      } else {
+        errors.push(
+          Object.assign(new FieldError(), {
+            field: 'username',
+            message: 'something wrong',
+          })
+        );
       }
-
-      return {
-        errors: [
-          {
-            field: "username",
-            message: "somthing wrong",
-          },
-        ],
-      };
-
     }
-    return {user};
+
+    if (errors.length == 0) return { user };
+
+    return {
+      errors: errors,
+    };
   }
 
   @Mutation(() => UserResponse)
