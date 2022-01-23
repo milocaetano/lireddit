@@ -7,8 +7,8 @@ import { useMutation } from 'urql';
 interface registerProps {}
 
 const REGISTER_MUT = `
-mutation ($username: String!, $password: String!) {
-  register(username: $username, password: $password){
+mutation Register($username: String!, $password: String!) {
+  register(options: {username: $username, password: $password}){
     errors{
       field,
       message
@@ -17,6 +17,7 @@ mutation ($username: String!, $password: String!) {
       id,
       username
     }
+  }
 }
 `;
 
@@ -28,7 +29,7 @@ const Register: React.FC<registerProps> = ({}) => {
       <Formik
         initialValues={{ username: '', password: '' }}
         onSubmit={values => {
-          console.log(values);
+          console.log("valor:",values);
           register(values);
         }}
       >
@@ -44,7 +45,7 @@ const Register: React.FC<registerProps> = ({}) => {
               ></InputField>
             </Box>
             <Button mt={4} colorScheme="teal" type="submit">
-              Register
+              Register now!
             </Button>
           </Form>
         )}
