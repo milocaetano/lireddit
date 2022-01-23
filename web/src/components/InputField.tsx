@@ -7,14 +7,18 @@ type InputFieldProps = FieldHookConfig<any> & {
    label: string;
    placeholder: string;
    name: string;
+   type?: string;
 };
 
-export const InputField: React.FC<InputFieldProps> = (props) => {
+export const InputField: React.FC<InputFieldProps> = ({type, label, ...props}) => {
   const [field, {error}] = useField(props);
+  //console.log(field);
+  console.log('teste', type);
+ 
   return (
     <FormControl isInvalid={!!error}>
-      <FormLabel htmlFor={field.name}>{props.label}</FormLabel>
-      <Input  {...field} id={field.name}  placeholder={props.placeholder}/>
+      <FormLabel htmlFor={field.name}>{label}</FormLabel>
+      <Input type={type} {...field} />
       { error? <FormErrorMessage>{error}</FormErrorMessage> : null}
     </FormControl>
   );
