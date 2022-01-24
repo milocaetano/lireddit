@@ -5,27 +5,29 @@ import { Wrapper } from '../components/Wrapper';
 import { InputField } from '../components/InputField';
 import { useMutation } from 'urql';
 import { useRegisterMutation } from '../generated/graphql';
+import { toErrorMap } from '../utils/toErrorMap';
+import { useRouter } from 'next/router';
 interface registerProps {}
 
 const Register: React.FC<registerProps> = ({}) => {
-  const [,register] = useRegisterMutation();
- 
+  const [, register] = useRegisterMutation();
+  const router = useRouter();
+
   return (
     <Wrapper>
       <Formik
         initialValues={{ username: '', password: '' }}
-        onSubmit={ async(values, {setErrors}) => {
-          console.log("valor:",values);
+        onSubmit={async (values, { setErrors }) => {
+          console.log('valor:', values);
           const result = await register(values);
-          if(result.data?.register.errors){
-              setErrors({
-                username: "Hey i'm an error"
-              })
 
+          if (result.data?.register.errors) {
+            setErrors(toErrorMap(result.data?.register.errors));
+          } else if (result.data?.register.user) {
+            router.push('/');
           }
-          
-          console.log("Result", result);
-         
+
+          console.log('Result', result);
         }}
       >
         {({ values, handleChange }) => (
