@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import React from 'react'
 import { InputField } from '../components/InputField';
 import { Wrapper } from '../components/Wrapper';
-import { useLoginMutation, useRegisterMutation, UsernamePasswordInput } from '../generated/graphql';
+import { useLoginMutation, UsernamePasswordInput } from '../generated/graphql';
 import { toErrorMap } from '../utils/toErrorMap';
 
 interface loginProps {
@@ -33,7 +33,7 @@ const Login: React.FC<loginProps> = ({}) => {
           console.log('Result', result);
         }}
       >
-        {({ values, handleChange }) => (
+        {() => (
           <Form>
             <InputField name="username" placeholder="Username" label="Username"></InputField>
             <Box mt="4">

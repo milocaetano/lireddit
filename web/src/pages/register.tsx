@@ -3,7 +3,6 @@ import React from 'react';
 import { Formik, Form } from 'formik';
 import { Wrapper } from '../components/Wrapper';
 import { InputField } from '../components/InputField';
-import { useMutation } from 'urql';
 import { useRegisterMutation } from '../generated/graphql';
 import { toErrorMap } from '../utils/toErrorMap';
 import { useRouter } from 'next/router';
@@ -31,7 +30,7 @@ const Register: React.FC<registerProps> = ({}) => {
           console.log('Result', result);
         }}
       >
-        {({ values, handleChange }) => (
+        {() => (
           <Form>
             <InputField name="username" placeholder="Username" label="Username"></InputField>
             <Box mt="4">
