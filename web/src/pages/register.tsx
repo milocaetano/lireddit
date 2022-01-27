@@ -24,6 +24,7 @@ const Register: React.FC<registerProps> = ({}) => {
           if (result.data?.register.errors) {
             setErrors(toErrorMap(result.data?.register.errors));
           } else if (result.data?.register.user) {
+            console.log('redirecting...');
             router.push('/');
           }
 
